@@ -58,6 +58,66 @@ export default function PassengerForm({
 
   
   
+  // const calculateOptimizedCost = async (pickup: Location, drop: Location) => {
+  //   try {
+  //     setLoading(true);
+  //     setError(null);
+  
+  //     // Calculate passenger's route
+  //     const passengerRoute = await api.calculateRoute(
+  //       pickup.address,
+  //       drop.address
+  //     );
+  
+  //     // Calculate base cost for the entire trip (mainRoute)
+  //     const fuelNeededMain = mainRoute.distance / vehicle.averageMileage;
+  //     const fuelCostMain = fuelNeededMain * vehicle.fuelPrice;
+  //     // const maintenanceCostMain = fuelCostMain * 0.2;
+  //     const totalBaseCost = fuelCostMain ;
+  
+  //     // Calculate distance contribution for the new passenger
+  //     const passengerDistance = passengerRoute.distance;
+  //     const totalDistance = mainRoute.distance;
+  
+  //     // Calculate shared cost proportion for each passenger including new one
+  //     const totalPassengers = existingPassengers.length + 1;
+  //     const distanceRatio = passengerDistance / totalDistance;
+  //     let baseCostShare = totalBaseCost * (distanceRatio / totalPassengers);
+  
+  //     // Apply overlap discount for shared routes
+  //     const overlapDiscount = calculateOverlapDiscount(
+  //       pickup,
+  //       drop,
+  //       mainRoute,
+  //       existingPassengers
+  //     );
+  
+  //     const overlapDiscountFactor = overlapDiscount * 0.3; // Up to 30%
+  //     const costMultiplier = Math.max(0.4, 1 - overlapDiscountFactor);
+  
+  //     // Calculate final cost and enforce the 40% cap
+  //     const uncappedCost = Math.round(baseCostShare * costMultiplier * 100) / 100;
+  //     const costCap = totalBaseCost * 0.3; // 40% of total base cost
+  //     const finalCost = Math.min(uncappedCost, costCap); // Enforce cap
+  
+  //     const newPassenger: Passenger = {
+  //       id: crypto.randomUUID(),
+  //       name,
+  //       pickupLocation: pickup,
+  //       dropLocation: drop,
+  //       distance: passengerDistance,
+  //       cost: finalCost
+  //     };
+  
+  //     onAddPassenger(newPassenger);
+  //     resetForm();
+  //   } catch (err) {
+  //     setError('Failed to calculate optimized route. Please try again.');
+  //     console.error('Calculation error:', err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const calculateOptimizedCost = async (pickup: Location, drop: Location) => {
     try {
       setLoading(true);
@@ -72,17 +132,14 @@ export default function PassengerForm({
       // Calculate base cost for the entire trip (mainRoute)
       const fuelNeededMain = mainRoute.distance / vehicle.averageMileage;
       const fuelCostMain = fuelNeededMain * vehicle.fuelPrice;
-      // const maintenanceCostMain = fuelCostMain * 0.2;
-      const totalBaseCost = fuelCostMain ;
+      const totalBaseCost = fuelCostMain;
   
       // Calculate distance contribution for the new passenger
       const passengerDistance = passengerRoute.distance;
-      const totalDistance = mainRoute.distance;
-  
-      // Calculate shared cost proportion for each passenger including new one
-      const totalPassengers = existingPassengers.length + 1;
-      const distanceRatio = passengerDistance / totalDistance;
-      let baseCostShare = totalBaseCost * (distanceRatio / totalPassengers);
+      
+      // Calculate individual cost based on passenger's distance
+      // Instead of dividing by total passengers, calculate based on individual contribution
+      const individualBaseCost = (passengerDistance / vehicle.averageMileage) * vehicle.fuelPrice;
   
       // Apply overlap discount for shared routes
       const overlapDiscount = calculateOverlapDiscount(
@@ -92,13 +149,14 @@ export default function PassengerForm({
         existingPassengers
       );
   
-      const overlapDiscountFactor = overlapDiscount * 0.3; // Up to 30%
+      // Adjust discount based on number of overlapping passengers
+      const overlapDiscountFactor = overlapDiscount * (0.3 / (existingPassengers.length + 1));
       const costMultiplier = Math.max(0.4, 1 - overlapDiscountFactor);
   
-      // Calculate final cost and enforce the 40% cap
-      const uncappedCost = Math.round(baseCostShare * costMultiplier * 100) / 100;
-      const costCap = totalBaseCost * 0.3; // 40% of total base cost
-      const finalCost = Math.min(uncappedCost, costCap); // Enforce cap
+      // Calculate final cost and enforce the minimum threshold
+      const uncappedCost = Math.round(individualBaseCost * costMultiplier * 100) / 100;
+      const costCap = totalBaseCost * 0.3; // 30% of total base cost
+      const finalCost = Math.min(uncappedCost, costCap);
   
       const newPassenger: Passenger = {
         id: crypto.randomUUID(),
@@ -117,8 +175,8 @@ export default function PassengerForm({
     } finally {
       setLoading(false);
     }
-  };
-  
+};
+
   
   const calculateOverlapDiscount = (
     pickup: Location,
