@@ -26,7 +26,7 @@ export const validateRoute = async (
     ownerRoute: OwnerRoute
 ): Promise<ValidationResponse> => {
     try {
-        const response = await axios.post('https://rideok-v5.onrender.com/api/validate-route', {
+        const response = await axios.post('https://rideok-v6.onrender.com/api/validate-route', {
             pickup,
             drop,
             ownerRoute,
