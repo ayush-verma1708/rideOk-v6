@@ -1,4 +1,4 @@
-import { Instagram, Car, Calculator, Users, Clock, Shield, ArrowRight } from 'lucide-react';
+import { Instagram, MessageCircle,Car, Calculator, Users, Clock, Shield, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 function Updates() {
@@ -51,13 +51,22 @@ function Updates() {
     <div className="flex justify-between items-center">
       <h1 className="text-3xl font-bold text-gray-900">RideOK Updates</h1>
       <a
-        href="https://instagram.com/ride_ok"
+        href="https://instagram.com/ride._.ok"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-2 text-pink-600 hover:text-pink-700 transition-colors"
       >
         <Instagram className="w-5 h-5" />
         <span>Follow us on Instagram</span>
+      </a>
+      <a
+        href="https://chat.whatsapp.com/Bu5rON72xKE28nnE2DVvRK"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
+      >
+        <MessageCircle className="w-5 h-5" />
+        <span>Join Our Community on Whatsapp</span>
       </a>
     </div>
 
