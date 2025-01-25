@@ -33,3 +33,20 @@ export const submitFeedback = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const getAllFeedback = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find();
+    res.status(200).json({
+      success: true,
+      count: feedbacks.length,
+      data: feedbacks,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server Error: Unable to fetch feedback',
+      error: error.message,
+    });
+  }
+};
